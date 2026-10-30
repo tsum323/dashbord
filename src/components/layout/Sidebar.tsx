@@ -19,12 +19,12 @@ function Item({ to, label, icon }: { to: string; label: string; icon: string }) 
       title={label}
       aria-label={label}
       className={({ isActive }) =>
-        `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
-          isActive ? 'bg-white/15 text-white shadow-[inset_2px_0_0_var(--accent)]' : 'text-white/70 hover:bg-white/8 hover:text-white'
+        `nav-item flex items-center gap-3 rounded-xl px-1.5 py-1.5 lg:px-2 text-sm transition-colors ${
+          isActive ? 'bg-white/10 text-white' : 'text-white/75 hover:bg-white/6 hover:text-white'
         }`
       }
     >
-      <span aria-hidden className="w-5 shrink-0 text-center text-base">{icon}</span>
+      <span aria-hidden className="glass-chip text-sm">{icon}</span>
       <span className="hidden lg:inline">{label}</span>
     </NavLink>
   );

@@ -3,9 +3,9 @@
 /* Значения --glass-* и --bg-dim задаёт приложение из настроек внешнего вида. */
 :root {
   --bg-dim: 0.35;
-  --glass-blur: 20px;
+  --glass-blur: 28px;
   --glass-opacity: 0.18;
-  --glass-border: rgb(255 255 255 / 0.18);
+  --glass-border: rgb(255 255 255 / 0.24);
   --text: #f5f6f8;
   --text-muted: rgb(245 246 248 / 0.68);
   --accent: #b8a6ff; /* сдержанный фиолетовый в тон фото */
@@ -27,26 +27,57 @@ body {
   min-height: 100dvh;
 }
 
-/* Матовое стекло. Тёмная подложка + тень текста сохраняют читаемость на любом фото. */
+/* Мутное (матовое) стекло: молочная полупрозрачная заливка, блик сверху, сильное размытие.
+   brightness() в фильтре чуть приглушает фото под панелью — так белый текст читается на любом снимке. */
 .glass {
-  background: rgb(22 24 30 / var(--glass-opacity));
-  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  background:
+    linear-gradient(
+      150deg,
+      rgb(255 255 255 / calc(var(--glass-opacity) * 0.75)) 0%,
+      rgb(255 255 255 / calc(var(--glass-opacity) * 0.3)) 100%
+    ),
+    rgb(18 18 26 / 0.2);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%) brightness(0.82);
   border: 1px solid var(--glass-border);
   box-shadow:
-    0 8px 32px rgb(0 0 0 / 0.25),
-    inset 0 1px 0 rgb(255 255 255 / 0.08);
+    0 10px 36px rgb(0 0 0 / 0.3),
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    inset 0 -1px 0 rgb(255 255 255 / 0.06);
   border-radius: 1.25rem;
 }
 
-.glass-strong {
-  background: rgb(22 24 30 / calc(var(--glass-opacity) + 0.25));
+/* Маленькая стеклянная плашка для иконок. */
+.glass-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 0.7rem;
+  background: linear-gradient(150deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.06));
+  backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    0 2px 8px rgb(0 0 0 / 0.2);
+  transition: background 150ms, box-shadow 150ms;
+}
+
+.nav-item[aria-current='page'] .glass-chip {
+  background: linear-gradient(150deg, rgb(255 255 255 / 0.34), rgb(184 166 255 / 0.18));
+  border-color: rgb(255 255 255 / 0.4);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 0 0 1px rgb(184 166 255 / 0.35),
+    0 4px 14px rgb(0 0 0 / 0.25);
 }
 
 /* Без backdrop-filter стекло заменяется плотной полупрозрачной панелью. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass {
-    background: rgb(22 24 30 / 0.82);
+  .glass,
+  .glass-chip {
+    background: rgb(40 40 52 / 0.85);
   }
 }
 

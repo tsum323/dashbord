@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { GlassCard, PageHeader } from '../components/ui/Glass';
+import { RotatedCover } from '../components/ui/RotatedCover';
 import type { Appearance } from '../db/types';
 import {
   APPEARANCE_LIMITS,
@@ -9,7 +10,7 @@ import {
   saveAppearance,
   saveBackground,
   useAppearance,
-  useBackgroundUrl,
+  useBackground,
 } from '../db/settings';
 
 const LABELS: Record<keyof Appearance, { title: string; format: (v: number) => string }> = {
@@ -20,7 +21,7 @@ const LABELS: Record<keyof Appearance, { title: string; format: (v: number) => s
 
 export function SettingsPage() {
   const appearance = useAppearance();
-  const bgUrl = useBackgroundUrl();
+  const bg = useBackground();
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -51,8 +52,10 @@ export function SettingsPage() {
           <p className="text-muted mt-1 text-sm">
             Фото хранится только в этом браузере (IndexedDB) и никуда не загружается.
           </p>
-          {bgUrl ? (
-            <img src={bgUrl} alt="Текущий фон" className="mt-4 aspect-video w-full rounded-xl object-cover" />
+          {bg ? (
+            <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-xl">
+              <RotatedCover src={bg.url} rotation={bg.rotation} alt="Текущий фон" />
+            </div>
           ) : (
             <div className="text-muted mt-4 flex aspect-video items-center justify-center rounded-xl border border-dashed border-white/25 text-sm">
               Фото не выбрано
@@ -74,9 +77,9 @@ export function SettingsPage() {
               onClick={() => fileRef.current?.click()}
               className="rounded-xl bg-white/90 px-4 py-2 text-sm font-medium text-black hover:bg-white"
             >
-              {bgUrl ? 'Заменить фото' : 'Выбрать фото'}
+              {bg ? 'Заменить фото' : 'Выбрать фото'}
             </button>
-            {bgUrl && (
+            {bg && (
               <>
                 <button
                   type="button"
@@ -94,7 +97,7 @@ export function SettingsPage() {
                 </button>
               </>
             )}
-            {bgUrl && (
+            {bg && (
               <button
                 type="button"
                 onClick={() => {

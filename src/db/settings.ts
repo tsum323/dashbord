@@ -1,9 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useState } from 'react';
 import { db, nowIso } from './db';
-import type { Appearance } from './types';
+import type { Appearance, Rotation } from './types';
 
-export const DEFAULT_APPEARANCE: Appearance = { dim: 0.35, blur: 20, opacity: 0.18 };
+export const DEFAULT_APPEARANCE: Appearance = { dim: 0.3, blur: 28, opacity: 0.22 };
 
 export const APPEARANCE_LIMITS = {
   dim: { min: 0, max: 0.8, step: 0.05 },
@@ -36,23 +36,18 @@ export async function saveBackground(file: File): Promise<void> {
   await db.settings.put({ key: 'background', value: { blob: file, name: file.name, updatedAt: nowIso() } });
 }
 
-/** Поворачивает сохранённое фото на 90° по часовой стрелке (direction = 1) или против (−1). */
+/**
+ * Поворачивает фото на 90° по часовой стрелке (direction = 1) или против (−1).
+ * Меняется только угол показа — оригинальный файл остаётся без изменений и потерь качества.
+ */
 export async function rotateBackground(direction: 1 | -1): Promise<void> {
   const rec = await db.settings.get('background');
   if (rec?.key !== 'background') return;
-  const bitmap = await createImageBitmap(rec.value.blob);
-  const canvas = document.createElement('canvas');
-  canvas.width = bitmap.height;
-  canvas.height = bitmap.width;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('Браузер не поддерживает обработку изображений.');
-  ctx.translate(canvas.width / 2, canvas.height / 2);
-  ctx.rotate((direction * Math.PI) / 2);
-  ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
-  bitmap.close();
-  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));
-  if (!blob) throw new Error('Не удалось повернуть фото.');
-  await db.settings.put({ key: 'background', value: { ...rec.value, blob, updatedAt: nowIso() } });
+  const rotation = ((((rec.value.rotation ?? 0) + direction * 90) % 360) + 360) % 360;
+  await db.settings.put({
+    key: 'background',
+    value: { ...rec.value, rotation: rotation as Rotation, updatedAt: nowIso() },
+  });
 }
 
 export async function removeBackground(): Promise<void> {
@@ -63,9 +58,10 @@ export async function removeBackground(): Promise<void> {
  * URL фоновой фотографии из IndexedDB. Создаётся один раз на изменение фото,
  * поэтому фон не перезагружается при переходах между разделами.
  */
-export function useBackgroundUrl(): string | null {
+export function useBackground(): { url: string; rotation: Rotation } | null {
   const rec = useLiveQuery(() => db.settings.get('background'));
   const blob = rec?.key === 'background' ? rec.value.blob : null;
+  const rotation = rec?.key === 'background' ? (rec.value.rotation ?? 0) : 0;
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
     if (!blob) {
@@ -76,5 +72,5 @@ export function useBackgroundUrl(): string | null {
     setUrl(next);
     return () => URL.revokeObjectURL(next);
   }, [blob]);
-  return url;
+  return url ? { url, rotation } : null;
 }

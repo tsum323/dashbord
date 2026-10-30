@@ -97,11 +97,14 @@ export interface Appearance {
   opacity: number; // непрозрачность панелей, 0.05..0.6
 }
 
+// Поворот фото применяется при показе (CSS), сам файл не пересжимается.
+export type Rotation = 0 | 90 | 180 | 270;
+
 // Таблица settings — пары ключ/значение.
 export type SettingsRecord =
   | { key: 'setup'; value: { initialBalance: number; completedAt: string } }
   | { key: 'appearance'; value: Appearance }
-  | { key: 'background'; value: { blob: Blob; name: string; updatedAt: string } }
+  | { key: 'background'; value: { blob: Blob; name: string; rotation?: Rotation; updatedAt: string } }
   | { key: 'lastExportAt'; value: string };
 
 export type SettingsKey = SettingsRecord['key'];
