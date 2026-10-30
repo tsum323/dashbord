@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import { AboutCard, BackupCard, BudgetCard } from '../components/DataSettings';
+import { useConfirm } from '../components/ui/Feedback';
 import { CardTitle, GlassCard, PageHeader } from '../components/ui/Glass';
 import { RotatedCover } from '../components/ui/RotatedCover';
 import type { Appearance } from '../db/types';
@@ -9,6 +11,7 @@ import {
   rotateBackground,
   saveAppearance,
   saveBackground,
+  updateAppearance,
   useAppearance,
   useBackground,
 } from '../db/settings';
@@ -22,6 +25,7 @@ const LABELS: Record<keyof Appearance, { title: string; format: (v: number) => s
 export function SettingsPage() {
   const appearance = useAppearance();
   const bg = useBackground();
+  const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -46,7 +50,7 @@ export function SettingsPage() {
   return (
     <>
       <PageHeader title="Настройки" subtitle="Внешний вид и данные" />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="phone:gap-3 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <GlassCard>
           <CardTitle>Фоновая фотография</CardTitle>
           <p className="text-muted mt-1 text-sm">
@@ -105,8 +109,9 @@ export function SettingsPage() {
             {bg && (
               <button
                 type="button"
-                onClick={() => {
-                  if (confirm('Убрать фоновую фотографию?')) void removeBackground();
+                onClick={async () => {
+                  if (await confirm({ title: 'Убрать фото?', text: 'Фон станет однотонным. Фото можно будет выбрать снова.', confirmLabel: 'Убрать', danger: true }))
+                    await removeBackground();
                 }}
                 className="phone:px-3 rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
               >
@@ -138,7 +143,7 @@ export function SettingsPage() {
                     max={lim.max}
                     step={lim.step}
                     value={appearance[key]}
-                    onChange={(e) => void saveAppearance({ ...appearance, [key]: Number(e.target.value) })}
+                    onChange={(e) => void updateAppearance({ [key]: Number(e.target.value) })}
                     className="mt-2 w-full accent-white"
                   />
                 </label>
@@ -153,6 +158,9 @@ export function SettingsPage() {
             Сбросить
           </button>
         </GlassCard>
+        <BudgetCard />
+        <BackupCard />
+        <AboutCard />
       </div>
     </>
   );

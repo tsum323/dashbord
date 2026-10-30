@@ -1,5 +1,7 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
+import { FeedbackProvider } from './components/ui/Feedback';
+import { ProjectDetailPage } from './pages/ProjectDetailPage';
 import { BoardPage } from './pages/BoardPage';
 import { FeedPage } from './pages/FeedPage';
 import { FinancePage } from './pages/FinancePage';
@@ -11,19 +13,22 @@ import { SettingsPage } from './pages/SettingsPage';
 // HashRouter: GitHub Pages не умеет отдавать index.html на любой путь.
 export function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route element={<AppShell />}>
-          <Route index element={<HomePage />} />
-          <Route path="projects" element={<ProjectsPage />} />
-          <Route path="board" element={<BoardPage />} />
-          <Route path="finance" element={<FinancePage />} />
-          <Route path="feed" element={<FeedPage />} />
-          <Route path="ideas" element={<IdeasPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="*" element={<HomePage />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+    <FeedbackProvider>
+      <HashRouter>
+        <Routes>
+          <Route element={<AppShell />}>
+            <Route index element={<HomePage />} />
+            <Route path="projects" element={<ProjectsPage />} />
+            <Route path="projects/:id" element={<ProjectDetailPage />} />
+            <Route path="board" element={<BoardPage />} />
+            <Route path="finance" element={<FinancePage />} />
+            <Route path="feed" element={<FeedPage />} />
+            <Route path="ideas" element={<IdeasPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="*" element={<HomePage />} />
+          </Route>
+        </Routes>
+      </HashRouter>
+    </FeedbackProvider>
   );
 }

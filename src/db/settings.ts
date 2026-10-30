@@ -20,6 +20,18 @@ export async function saveAppearance(value: Appearance): Promise<void> {
   await db.settings.put({ key: 'appearance', value });
 }
 
+/**
+ * Меняет одно или несколько полей внешнего вида. Читает текущее значение внутри транзакции,
+ * поэтому быстрые изменения разных ползунков не затирают друг друга.
+ */
+export async function updateAppearance(patch: Partial<Appearance>): Promise<void> {
+  await db.transaction('rw', db.settings, async () => {
+    const rec = await db.settings.get('appearance');
+    const current = rec?.key === 'appearance' ? rec.value : DEFAULT_APPEARANCE;
+    await db.settings.put({ key: 'appearance', value: { ...current, ...patch } });
+  });
+}
+
 /** undefined — ещё загружается, null — первичная настройка не пройдена. */
 export function useSetup() {
   return useLiveQuery(async () => {
