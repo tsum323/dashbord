@@ -18,8 +18,9 @@ export function AppShell() {
     <>
       <BackgroundLayer />
       <Sidebar />
-      <main className="min-h-dvh py-6 pl-[84px] pr-4 md:pr-6 lg:pl-[260px] lg:pr-8">
-        <div className="mx-auto max-w-6xl">
+      {/* Слева: отступ 16 + меню (64 / 240) + отступ 16; справа 16. Сверху 28 — на уровне заголовка меню. */}
+      <main className="min-h-dvh pb-4 pl-24 pr-4 pt-7 lg:pl-[272px]">
+        <div>
           <Outlet />
         </div>
       </main>

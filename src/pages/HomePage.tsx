@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { EmptyState, GlassCard, Loading, PageHeader } from '../components/ui/Glass';
+import { CardTitle, EmptyState, GlassCard, Loading, PageHeader } from '../components/ui/Glass';
 import { db } from '../db/db';
 import { useSetup } from '../db/settings';
 import { calcTotals } from '../lib/finance';
@@ -9,12 +9,14 @@ function Kpi({ label, value, tone }: { label: string; value: number; tone?: 'aut
   const color = tone === 'auto' ? (value > 0 ? 'text-[var(--positive)]' : value < 0 ? 'text-[var(--negative)]' : '') : '';
   return (
     <GlassCard>
-      <div className="text-muted text-sm">{label}</div>
-      <div className={`mt-2 text-2xl font-semibold tabular-nums tracking-tight md:text-3xl ${color}`}>{formatRub(value)}</div>
+      <CardTitle>{label}</CardTitle>
+      <div className={`mt-2 text-3xl font-semibold leading-9 tabular-nums tracking-tight ${color}`}>{formatRub(value)}</div>
     </GlassCard>
   );
 }
 
+// Одна сетка на всю страницу: 2 колонки на iPad, 4 на компьютере.
+// Нижний ряд повторяет колонки показателей: 1 + 3.
 export function HomePage() {
   const setup = useSetup();
   const transactions = useLiveQuery(() => db.transactions.toArray());
@@ -33,14 +35,13 @@ export function HomePage() {
         <Kpi label="Общий доход" value={totals.income} />
         <Kpi label="Общие расходы" value={totals.expense} />
         <Kpi label="Чистая прибыль" value={totals.profit} tone="auto" />
-      </div>
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <GlassCard>
-          <div className="text-muted text-sm">Активные проекты</div>
-          <div className="mt-2 text-3xl font-semibold">{activeProjects ?? 0}</div>
+        <GlassCard className="sm:col-span-2 xl:col-span-1">
+          <CardTitle>Активные проекты</CardTitle>
+          <div className="mt-2 text-3xl font-semibold leading-9 tabular-nums">{activeProjects ?? 0}</div>
+          <p className="text-muted mt-1 text-xs leading-4">В разработке, тестировании и запущенные</p>
         </GlassCard>
-        <GlassCard className="lg:col-span-2">
-          <h2 className="font-medium">Последние операции</h2>
+        <GlassCard className="min-h-[200px] sm:col-span-2 xl:col-span-3">
+          <CardTitle>Последние операции</CardTitle>
           <EmptyState title="Операций пока нет" text="Добавьте первый доход или расход — он появится здесь." />
         </GlassCard>
       </div>

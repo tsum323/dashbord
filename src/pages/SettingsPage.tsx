@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { GlassCard, PageHeader } from '../components/ui/Glass';
+import { CardTitle, GlassCard, PageHeader } from '../components/ui/Glass';
 import { RotatedCover } from '../components/ui/RotatedCover';
 import type { Appearance } from '../db/types';
 import {
@@ -48,7 +48,7 @@ export function SettingsPage() {
       <PageHeader title="Настройки" subtitle="Внешний вид и данные" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <GlassCard>
-          <h2 className="font-medium">Фоновая фотография</h2>
+          <CardTitle>Фоновая фотография</CardTitle>
           <p className="text-muted mt-1 text-sm">
             Фото хранится только в этом браузере (IndexedDB) и никуда не загружается.
           </p>
@@ -84,16 +84,20 @@ export function SettingsPage() {
                 <button
                   type="button"
                   onClick={() => void rotate(-1)}
-                  className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
+                  title="Повернуть против часовой стрелки"
+                  aria-label="Повернуть против часовой стрелки"
+                  className="w-10 rounded-xl bg-white/10 py-2 text-sm hover:bg-white/20"
                 >
-                  ↺ Повернуть
+                  ↺
                 </button>
                 <button
                   type="button"
                   onClick={() => void rotate(1)}
-                  className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
+                  title="Повернуть по часовой стрелке"
+                  aria-label="Повернуть по часовой стрелке"
+                  className="w-10 rounded-xl bg-white/10 py-2 text-sm hover:bg-white/20"
                 >
-                  ↻ Повернуть
+                  ↻
                 </button>
               </>
             )}
@@ -117,7 +121,7 @@ export function SettingsPage() {
         </GlassCard>
 
         <GlassCard>
-          <h2 className="font-medium">Стекло и фон</h2>
+          <CardTitle>Стекло и фон</CardTitle>
           <div className="mt-4 space-y-5">
             {(Object.keys(LABELS) as (keyof Appearance)[]).map((key) => {
               const lim = APPEARANCE_LIMITS[key];
@@ -143,7 +147,7 @@ export function SettingsPage() {
           <button
             type="button"
             onClick={() => void saveAppearance(DEFAULT_APPEARANCE)}
-            className="mt-5 rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
+            className="mt-5 self-start rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
           >
             Сбросить
           </button>
