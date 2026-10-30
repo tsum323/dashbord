@@ -9,7 +9,7 @@ export const NAV_ITEMS = [
   { to: '/ideas', label: 'Банк идей', icon: '✦' },
 ] as const;
 
-const SETTINGS = { to: '/settings', label: 'Настройки', icon: '⚙' };
+export const SETTINGS = { to: '/settings', label: 'Настройки', icon: '⚙' };
 
 function Item({ to, label, icon }: { to: string; label: string; icon: string }) {
   return (
@@ -35,12 +35,13 @@ function Item({ to, label, icon }: { to: string; label: string; icon: string }) 
  * внутренний отступ 12px. Заголовок меню и заголовок страницы начинаются на одной высоте,
  * первый пункт меню — на уровне верхнего края первой карточки.
  * Компьютер (≥1024px): меню 240px с подписями. iPad в портрете: колонка 64px с иконками.
+ * Телефон (вариант phone): меню скрыто, вместо него нижняя панель BottomNav.
  */
 export function Sidebar() {
   return (
     <nav
       aria-label="Разделы"
-      className="glass fixed bottom-4 left-4 top-4 z-20 flex w-16 flex-col gap-1 p-3 lg:w-60"
+      className="glass phone:hidden fixed bottom-4 left-4 top-4 z-20 flex w-16 flex-col gap-1 p-3 lg:w-60"
     >
       <div className="h-[79px] shrink-0 lg:px-2">
         <div className="text-shadow text-center text-lg font-semibold leading-7 tracking-tight lg:text-left">

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 export function GlassCard({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <section className={`glass flex flex-col p-5 ${className}`}>{children}</section>;
+  return <section className={`glass phone:p-4 flex flex-col p-5 ${className}`}>{children}</section>;
 }
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: ReactNode }) {

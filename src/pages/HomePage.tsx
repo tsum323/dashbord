@@ -5,18 +5,21 @@ import { useSetup } from '../db/settings';
 import { calcTotals } from '../lib/finance';
 import { formatRub } from '../lib/money';
 
-function Kpi({ label, value, tone }: { label: string; value: number; tone?: 'auto' }) {
+function Kpi({ label, value, tone, className = '' }: { label: string; value: number; tone?: 'auto'; className?: string }) {
   const color = tone === 'auto' ? (value > 0 ? 'text-[var(--positive)]' : value < 0 ? 'text-[var(--negative)]' : '') : '';
   return (
-    <GlassCard>
+    <GlassCard className={className}>
       <CardTitle>{label}</CardTitle>
-      <div className={`mt-2 text-3xl font-semibold leading-9 tabular-nums tracking-tight ${color}`}>{formatRub(value)}</div>
+      <div className={`phone:text-2xl phone:leading-8 mt-2 break-words text-3xl font-semibold leading-9 tabular-nums tracking-tight ${color}`}>
+        {formatRub(value)}
+      </div>
     </GlassCard>
   );
 }
 
-// Одна сетка на всю страницу: 2 колонки на iPad, 4 на компьютере.
+// Одна сетка на всю страницу: 2 колонки на телефоне и iPad, 4 на компьютере.
 // Нижний ряд повторяет колонки показателей: 1 + 3.
+// На узком телефоне бюджет — главная цифра — занимает всю ширину.
 export function HomePage() {
   const setup = useSetup();
   const transactions = useLiveQuery(() => db.transactions.toArray());
@@ -30,17 +33,17 @@ export function HomePage() {
   return (
     <>
       <PageHeader title="Главная" subtitle="Деньги, проекты и задачи — на одном экране" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi label="Текущий бюджет" value={totals.budget} />
+      <div className="phone:gap-3 grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <Kpi label="Текущий бюджет" value={totals.budget} className="col-span-2 sm:col-span-1" />
         <Kpi label="Общий доход" value={totals.income} />
         <Kpi label="Общие расходы" value={totals.expense} />
         <Kpi label="Чистая прибыль" value={totals.profit} tone="auto" />
         <GlassCard className="sm:col-span-2 xl:col-span-1">
           <CardTitle>Активные проекты</CardTitle>
           <div className="mt-2 text-3xl font-semibold leading-9 tabular-nums">{activeProjects ?? 0}</div>
-          <p className="text-muted mt-1 text-xs leading-4">В разработке, тестировании и запущенные</p>
+          <p className="text-muted mt-1 text-xs leading-4">В работе и запущенные</p>
         </GlassCard>
-        <GlassCard className="min-h-[200px] sm:col-span-2 xl:col-span-3">
+        <GlassCard className="col-span-2 min-h-[200px] xl:col-span-3">
           <CardTitle>Последние операции</CardTitle>
           <EmptyState title="Операций пока нет" text="Добавьте первый доход или расход — он появится здесь." />
         </GlassCard>

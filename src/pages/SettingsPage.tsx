@@ -71,13 +71,14 @@ export function SettingsPage() {
               e.target.value = '';
             }}
           />
-          <div className="mt-4 flex flex-wrap gap-2">
+          {/* На телефоне — сетка в одну строку: «Заменить» сжимается, остальное фиксировано. */}
+          <div className="phone:grid phone:grid-cols-[1fr_40px_40px_auto] mt-4 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="rounded-xl bg-white/90 px-4 py-2 text-sm font-medium text-black hover:bg-white"
+              className="phone:px-2 rounded-xl bg-white/90 px-4 py-2 text-sm font-medium text-black hover:bg-white"
             >
-              {bg ? 'Заменить фото' : 'Выбрать фото'}
+              {bg ? 'Заменить' : 'Выбрать фото'}
             </button>
             {bg && (
               <>
@@ -107,7 +108,7 @@ export function SettingsPage() {
                 onClick={() => {
                   if (confirm('Убрать фоновую фотографию?')) void removeBackground();
                 }}
-                className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
+                className="phone:px-3 rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
               >
                 Убрать
               </button>
