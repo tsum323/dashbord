@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+/* Значения --glass-* и --bg-dim задаёт приложение из настроек внешнего вида. */
+:root {
+  --bg-dim: 0.35;
+  --glass-blur: 20px;
+  --glass-opacity: 0.18;
+  --glass-border: rgb(255 255 255 / 0.18);
+  --text: #f5f6f8;
+  --text-muted: rgb(245 246 248 / 0.68);
+  --positive: #7fd8a8;
+  --negative: #f2a0a0;
+  --base: #15171c; /* цвет под фото, пока оно не загружено */
+
+  color-scheme: dark;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--base);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--base);
+}
+
+/* Матовое стекло. Тёмная подложка + тень текста сохраняют читаемость на любом фото. */
+.glass {
+  background: rgb(22 24 30 / var(--glass-opacity));
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 32px rgb(0 0 0 / 0.25),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+  border-radius: 1.25rem;
+}
+
+.glass-strong {
+  background: rgb(22 24 30 / calc(var(--glass-opacity) + 0.25));
+}
+
+/* Без backdrop-filter стекло заменяется плотной полупрозрачной панелью. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgb(22 24 30 / 0.82);
+  }
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-shadow {
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+
+:focus-visible {
+  outline: 2px solid rgb(255 255 255 / 0.7);
+  outline-offset: 2px;
+}
