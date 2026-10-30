@@ -19,15 +19,17 @@ export function calcTotals(transactions: Transaction[], initialBalance: number):
   return { income, expense, profit: income - expense, budget: initialBalance + income - expense };
 }
 
-// «Вложено» — расходы на создание продукта (разработка и оборудование);
-// «Расходы» — все расходы проекта, включая вложения.
+// Расходы проекта делятся без пересечений:
+// «Вложено» — создание продукта (разработка, оборудование);
+// «Расходы» — текущие траты (подписки, AI-сервисы, реклама, прочее).
+// Результат = доход − вложено − расходы.
 export const INVESTMENT_CATEGORIES: ExpenseCategory[] = ['development', 'equipment'];
 
 export interface ProjectFinance {
   invested: number;
   income: number;
-  expense: number;
-  result: number; // доход − расходы
+  expense: number; // текущие расходы, без вложений
+  result: number; // доход − вложено − расходы
 }
 
 const EMPTY: ProjectFinance = { invested: 0, income: 0, expense: 0, result: 0 };
@@ -41,10 +43,10 @@ export function calcProjectFinances(transactions: Transaction[]): Map<ID, Projec
     if (t.type === 'income') {
       f.income += t.amount;
     } else {
-      f.expense += t.amount;
       if (INVESTMENT_CATEGORIES.includes(t.category as ExpenseCategory)) f.invested += t.amount;
+      else f.expense += t.amount;
     }
-    f.result = f.income - f.expense;
+    f.result = f.income - f.invested - f.expense;
     map.set(t.projectId, f);
   }
   return map;

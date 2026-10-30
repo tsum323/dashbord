@@ -36,6 +36,25 @@ export async function saveBackground(file: File): Promise<void> {
   await db.settings.put({ key: 'background', value: { blob: file, name: file.name, updatedAt: nowIso() } });
 }
 
+/** Поворачивает сохранённое фото на 90° по часовой стрелке (direction = 1) или против (−1). */
+export async function rotateBackground(direction: 1 | -1): Promise<void> {
+  const rec = await db.settings.get('background');
+  if (rec?.key !== 'background') return;
+  const bitmap = await createImageBitmap(rec.value.blob);
+  const canvas = document.createElement('canvas');
+  canvas.width = bitmap.height;
+  canvas.height = bitmap.width;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Браузер не поддерживает обработку изображений.');
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate((direction * Math.PI) / 2);
+  ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));
+  if (!blob) throw new Error('Не удалось повернуть фото.');
+  await db.settings.put({ key: 'background', value: { ...rec.value, blob, updatedAt: nowIso() } });
+}
+
 export async function removeBackground(): Promise<void> {
   await db.settings.delete('background');
 }

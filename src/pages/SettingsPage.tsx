@@ -5,6 +5,7 @@ import {
   APPEARANCE_LIMITS,
   DEFAULT_APPEARANCE,
   removeBackground,
+  rotateBackground,
   saveAppearance,
   saveBackground,
   useAppearance,
@@ -30,6 +31,14 @@ export function SettingsPage() {
       setMessage({ ok: true, text: 'Фон сохранён на этом устройстве.' });
     } catch (e) {
       setMessage({ ok: false, text: e instanceof Error ? e.message : 'Не удалось сохранить фото.' });
+    }
+  }
+
+  async function rotate(direction: 1 | -1) {
+    try {
+      await rotateBackground(direction);
+    } catch (e) {
+      setMessage({ ok: false, text: e instanceof Error ? e.message : 'Не удалось повернуть фото.' });
     }
   }
 
@@ -67,6 +76,24 @@ export function SettingsPage() {
             >
               {bgUrl ? 'Заменить фото' : 'Выбрать фото'}
             </button>
+            {bgUrl && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => void rotate(-1)}
+                  className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
+                >
+                  ↺ Повернуть
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void rotate(1)}
+                  className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20"
+                >
+                  ↻ Повернуть
+                </button>
+              </>
+            )}
             {bgUrl && (
               <button
                 type="button"

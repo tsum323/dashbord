@@ -41,7 +41,7 @@ describe('calcProjectFinances', () => {
       tx({ type: 'expense', amount: 20_00, projectId: 'a', category: 'subscriptions' }),
       tx({ type: 'expense', amount: 999_00 }),
     ]);
-    expect(projectFinance(map, 'a')).toEqual({ invested: 30_00, income: 100_00, expense: 50_00, result: 50_00 });
+    expect(projectFinance(map, 'a')).toEqual({ invested: 30_00, income: 100_00, expense: 20_00, result: 50_00 });
     expect(projectFinance(map, 'missing').result).toBe(0);
     expect(map.size).toBe(1);
   });

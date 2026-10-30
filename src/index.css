@@ -8,6 +8,7 @@
   --glass-border: rgb(255 255 255 / 0.18);
   --text: #f5f6f8;
   --text-muted: rgb(245 246 248 / 0.68);
+  --accent: #b8a6ff; /* сдержанный фиолетовый в тон фото */
   --positive: #7fd8a8;
   --negative: #f2a0a0;
   --base: #15171c; /* цвет под фото, пока оно не загружено */
@@ -20,10 +21,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* У body нет фона: иначе он перекроет слой с фотографией (z-index: -10). */
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--base);
 }
 
 /* Матовое стекло. Тёмная подложка + тень текста сохраняют читаемость на любом фото. */
